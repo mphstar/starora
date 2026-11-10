@@ -3,38 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Starora AI Studio — Super-Resolution Image & Video Enhancer</title>
-  <meta name="description" content="Offline desktop AI super-resolution for photos and videos powered by Real-ESRGAN Vulkan and FFmpeg. 100% private, GPU accelerated.">
+  <title>Starora AI Studio — Offline Image & Video Upscaler</title>
+  <meta name="description" content="Offline desktop AI super-resolution for photos and videos powered by Real-ESRGAN Vulkan and FFmpeg. Fast, private, hardware-accelerated.">
   
-  <!-- Open Graph -->
-  <meta property="og:title" content="Starora AI Studio — Super-Resolution Image & Video Enhancer">
-  <meta property="og:description" content="Offline desktop AI super-resolution for photos and videos powered by Real-ESRGAN Vulkan and FFmpeg.">
+  <meta property="og:title" content="Starora AI Studio">
+  <meta property="og:description" content="Desktop AI super-resolution for images and videos powered by Real-ESRGAN Vulkan & FFmpeg.">
   <meta property="og:image" content="resources/comparison_split.png">
   <meta property="og:type" content="website">
-  
+
   <link rel="icon" type="image/png" href="resources/icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg: #090B10;
-      --card-bg: #111520;
-      --card-border: #1E2538;
-      --card-hover: #262F46;
-      --text-main: #F8FAFC;
-      --text-muted: #94A3B8;
-      --text-dim: #64748B;
-      --accent: #6366F1;
-      --accent-glow: rgba(99, 102, 241, 0.25);
-      --accent-hover: #4F46E5;
-      --cyan: #38BDF8;
-      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
-      --radius-sm: 8px;
-      --radius-md: 14px;
-      --radius-lg: 20px;
+      --bg: #0e1117;
+      --surface: #161b22;
+      --surface-subtle: #1c2128;
+      --border: #30363d;
+      --border-subtle: #21262d;
+      --text: #f0f6fc;
+      --text-muted: #8b949e;
+      --text-subtle: #6e7681;
+      --primary: #238636;
+      --primary-hover: #2ea043;
+      --blue: #2f81f7;
+      --blue-hover: #388bfd;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
     }
 
     * {
@@ -43,62 +40,36 @@
       padding: 0;
     }
 
-    html {
-      scroll-behavior: smooth;
-      background-color: var(--bg);
-      color: var(--text-main);
-      font-family: var(--font-sans);
-    }
-
     body {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
-      line-height: 1.6;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Ambient Background Glows */
-    .ambient-glow {
-      position: absolute;
-      width: 700px;
-      height: 700px;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 0;
-      filter: blur(140px);
-      opacity: 0.18;
-    }
-    .glow-1 {
-      top: -150px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: radial-gradient(circle, #6366F1 0%, #38BDF8 70%, transparent 100%);
-    }
-    .glow-2 {
-      top: 1200px;
-      right: -200px;
-      background: radial-gradient(circle, #8B5CF6 0%, transparent 70%);
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 0 20px;
     }
 
-    /* Navigation */
+    /* Header / Nav */
     header {
+      border-bottom: 1px solid var(--border-subtle);
+      background-color: var(--bg);
       position: sticky;
       top: 0;
-      z-index: 100;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      background-color: rgba(9, 11, 16, 0.8);
-      border-bottom: 1px solid var(--card-border);
+      z-index: 50;
     }
 
-    .nav-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 14px 24px;
+    .nav {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      height: 64px;
     }
 
     .brand {
@@ -106,672 +77,531 @@
       align-items: center;
       gap: 12px;
       text-decoration: none;
-      color: var(--text-main);
-      font-weight: 700;
-      font-size: 1.15rem;
-      letter-spacing: -0.02em;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 1.05rem;
     }
 
     .brand img {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: block;
     }
 
-    .version-tag {
-      font-size: 0.72rem;
-      font-weight: 600;
+    .badge-version {
       font-family: var(--font-mono);
-      background: rgba(99, 102, 241, 0.15);
-      color: #A5B4FC;
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      padding: 2px 7px;
-      border-radius: 6px;
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-muted);
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 28px;
+      gap: 20px;
       list-style: none;
     }
 
     .nav-links a {
-      text-decoration: none;
       color: var(--text-muted);
-      font-size: 0.92rem;
+      text-decoration: none;
+      font-size: 0.9rem;
       font-weight: 500;
-      transition: color 0.15s ease;
+      transition: color 0.15s;
     }
 
     .nav-links a:hover {
-      color: var(--text-main);
+      color: var(--text);
     }
 
     .btn-nav {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 18px;
-      background-color: var(--accent);
-      color: #FFF !important;
-      border-radius: var(--radius-sm);
-      font-weight: 600;
-      font-size: 0.88rem;
-      text-decoration: none;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 14px var(--accent-glow);
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      color: var(--text) !important;
+      padding: 6px 14px;
+      border-radius: 6px;
     }
 
     .btn-nav:hover {
-      background-color: var(--accent-hover);
-      transform: translateY(-1px);
+      background: var(--border-subtle);
+      border-color: var(--text-muted);
     }
 
-    /* Layout Sections */
-    main {
-      flex: 1;
-      position: relative;
-      z-index: 1;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    /* Hero */
+    /* Hero Section */
     .hero {
-      padding: 80px 0 50px;
-      text-align: center;
+      padding: 64px 0 40px;
     }
 
-    .pill-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      background: rgba(30, 37, 56, 0.7);
-      border: 1px solid var(--card-border);
-      border-radius: 100px;
-      font-size: 0.82rem;
-      color: var(--cyan);
-      margin-bottom: 24px;
-      backdrop-filter: blur(10px);
+    .hero-content {
+      max-width: 720px;
     }
 
-    .pill-badge span.dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background-color: #10B981;
-      box-shadow: 0 0 8px #10B981;
+    .meta-tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--blue);
+      margin-bottom: 14px;
     }
 
-    .hero h1 {
-      font-size: clamp(2.5rem, 6vw, 4.2rem);
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      line-height: 1.1;
-      margin-bottom: 20px;
+    h1 {
+      font-size: clamp(2rem, 4.5vw, 2.9rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      color: #ffffff;
     }
 
-    .gradient-text {
-      background: linear-gradient(135deg, #A5B4FC 0%, #6366F1 50%, #38BDF8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero p {
-      max-width: 660px;
-      margin: 0 auto 36px;
+    .hero-lead {
       font-size: 1.15rem;
       color: var(--text-muted);
       line-height: 1.6;
+      margin-bottom: 28px;
     }
 
     .hero-actions {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 16px;
+      gap: 12px;
       flex-wrap: wrap;
+      margin-bottom: 20px;
     }
 
     .btn {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 14px 28px;
-      font-size: 1rem;
+      gap: 8px;
+      padding: 10px 18px;
+      font-size: 0.92rem;
       font-weight: 600;
-      border-radius: var(--radius-md);
+      border-radius: 6px;
       text-decoration: none;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
       cursor: pointer;
     }
 
-    .btn:active {
-      transform: scale(0.98);
-    }
-
     .btn-primary {
-      background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
-      color: #FFF;
-      box-shadow: 0 8px 24px var(--accent-glow);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      background-color: var(--primary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #ffffff;
     }
 
     .btn-primary:hover {
-      box-shadow: 0 12px 32px rgba(99, 102, 241, 0.4);
-      transform: translateY(-2px);
+      background-color: var(--primary-hover);
     }
 
     .btn-secondary {
-      background-color: var(--card-bg);
-      color: var(--text-main);
-      border: 1px solid var(--card-border);
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
     }
 
     .btn-secondary:hover {
-      background-color: var(--card-hover);
-      border-color: #333F5E;
-      transform: translateY(-2px);
+      background-color: var(--surface-subtle);
+      border-color: var(--text-muted);
     }
 
-    .hero-subtext {
-      margin-top: 16px;
-      font-size: 0.85rem;
-      color: var(--text-dim);
+    .system-note {
+      font-size: 0.82rem;
+      color: var(--text-subtle);
     }
 
-    /* Comparison Split Showcase */
-    .showcase {
-      margin: 40px auto 90px;
-      max-width: 1060px;
+    /* Comparison Studio Section */
+    .inspector-section {
+      padding: 24px 0 60px;
     }
 
-    .showcase-header {
+    .inspector-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .inspector-toolbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-subtle);
       flex-wrap: wrap;
       gap: 12px;
     }
 
-    .showcase-title {
-      font-size: 0.95rem;
+    .inspector-title {
+      font-size: 0.88rem;
       font-weight: 600;
-      color: var(--text-muted);
+      color: var(--text);
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .toggle-group {
-      display: flex;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-sm);
-      padding: 3px;
-      gap: 2px;
-    }
-
-    .toggle-btn {
-      background: none;
-      border: none;
-      padding: 6px 14px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--text-muted);
+    .segmented-control {
+      display: inline-flex;
+      background: var(--bg);
+      border: 1px solid var(--border);
       border-radius: 6px;
+      padding: 2px;
+    }
+
+    .seg-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+      font-family: inherit;
+      padding: 4px 12px;
+      border-radius: 4px;
       cursor: pointer;
-      font-family: var(--font-sans);
-      transition: all 0.15s ease;
+      transition: background 0.15s, color 0.15s;
     }
 
-    .toggle-btn.active {
-      background: var(--accent);
-      color: #FFF;
+    .seg-btn.active {
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 600;
     }
 
-    .compare-container {
+    .viewport {
       position: relative;
       width: 100%;
-      height: 540px;
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      border: 1px solid var(--card-border);
-      background-color: #07090E;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+      height: 520px;
+      background-color: #06080b;
       user-select: none;
-      -webkit-user-select: none;
-      touch-action: pan-y;
-      cursor: col-resize;
+      overflow: hidden;
+      cursor: ew-resize;
     }
 
     @media (max-width: 768px) {
-      .compare-container {
-        height: 340px;
+      .viewport {
+        height: 360px;
       }
     }
 
-    .compare-img {
+    .view-layer {
       position: absolute;
-      top: 0;
-      left: 0;
+      inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
       pointer-events: none;
     }
 
-    .compare-overlay {
+    .view-overlay {
       position: absolute;
-      top: 0;
-      left: 0;
+      inset: 0;
       width: 100%;
       height: 100%;
       overflow: hidden;
-      clip-path: polygon(0 0, var(--split, 50%) 0, var(--split, 50%) 100%, 0 100%);
-      will-change: clip-path;
+      clip-path: polygon(0 0, var(--pos, 50%) 0, var(--pos, 50%) 100%, 0 100%);
     }
 
-    .compare-divider {
+    .divider-line {
       position: absolute;
       top: 0;
       bottom: 0;
-      left: var(--split, 50%);
-      width: 3px;
-      background: #FFF;
-      box-shadow: 0 0 16px rgba(255, 255, 255, 0.8);
-      pointer-events: none;
+      left: var(--pos, 50%);
+      width: 2px;
+      background: #ffffff;
       transform: translateX(-50%);
-      z-index: 10;
-      will-change: left;
+      pointer-events: none;
     }
 
-    .compare-handle {
+    .slider-handle {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 44px;
-      height: 44px;
-      background: rgba(17, 21, 32, 0.95);
-      border: 2px solid #FFF;
+      width: 32px;
+      height: 32px;
+      background: #ffffff;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #FFF;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
-      pointer-events: auto;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      color: #0e1117;
     }
 
-    .compare-handle svg {
-      width: 20px;
-      height: 20px;
+    .slider-handle svg {
+      width: 16px;
+      height: 16px;
     }
 
-    .badge-tag {
+    .label-pill {
       position: absolute;
-      top: 18px;
-      z-index: 15;
-      padding: 6px 12px;
-      border-radius: var(--radius-sm);
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+      top: 14px;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 4px;
       pointer-events: none;
+      font-family: var(--font-mono);
     }
 
-    .badge-before {
-      left: 18px;
-      background: rgba(239, 68, 68, 0.8);
-      color: #FFF;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+    .label-before {
+      left: 14px;
+      background: rgba(14, 17, 23, 0.85);
+      border: 1px solid var(--border);
+      color: #f85149;
     }
 
-    .badge-after {
-      right: 18px;
-      background: rgba(16, 185, 129, 0.8);
-      color: #FFF;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+    .label-after {
+      right: 14px;
+      background: rgba(14, 17, 23, 0.85);
+      border: 1px solid var(--border);
+      color: #3fb950;
     }
 
-    .compare-hint {
-      text-align: center;
+    .inspector-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
       font-size: 0.82rem;
-      color: var(--text-dim);
-      margin-top: 12px;
+      color: var(--text-subtle);
+      border-top: 1px solid var(--border);
+      background: var(--surface-subtle);
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
-    /* Section Styles */
+    /* Core Features Grid */
     section {
-      padding: 80px 0;
-    }
-
-    .section-header {
-      text-align: center;
-      max-width: 680px;
-      margin: 0 auto 56px;
-    }
-
-    .section-tag {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--cyan);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 12px;
+      padding: 48px 0;
     }
 
     .section-title {
-      font-size: clamp(2rem, 3.5vw, 2.7rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.2;
-      margin-bottom: 16px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
     }
 
     .section-desc {
       color: var(--text-muted);
-      font-size: 1.05rem;
-    }
-
-    /* Features Grid */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
-    }
-
-    .feature-card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-lg);
-      padding: 32px 28px;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .feature-card::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .feature-card:hover {
-      border-color: #2F3B59;
-      transform: translateY(-4px);
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
-    }
-
-    .feature-card:hover::before {
-      opacity: 1;
-    }
-
-    .feature-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      background: rgba(99, 102, 241, 0.12);
-      border: 1px solid rgba(99, 102, 241, 0.25);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #A5B4FC;
-      margin-bottom: 20px;
-    }
-
-    .feature-card h3 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      margin-bottom: 10px;
-      letter-spacing: -0.02em;
-    }
-
-    .feature-card p {
-      font-size: 0.94rem;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-
-    /* Models Showcase Section */
-    .models-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-    }
-
-    .model-card {
-      background: linear-gradient(180deg, #131826 0%, #0E121C 100%);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-md);
-      padding: 24px;
-    }
-
-    .model-badge {
-      display: inline-block;
-      font-family: var(--font-mono);
-      font-size: 0.78rem;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 6px;
-      background: rgba(56, 189, 248, 0.12);
-      color: var(--cyan);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      margin-bottom: 14px;
-    }
-
-    .model-card h4 {
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .model-card p {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
-    /* Download Cards */
-    .download-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
-      max-width: 880px;
-      margin: 0 auto;
-    }
-
-    .dl-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-lg);
-      padding: 36px 30px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-    }
-
-    .dl-card.highlight {
-      border-color: rgba(99, 102, 241, 0.5);
-      background: linear-gradient(180deg, #161B2B 0%, #101420 100%);
-      box-shadow: 0 16px 40px rgba(99, 102, 241, 0.15);
-    }
-
-    .dl-badge {
-      position: absolute;
-      top: -12px;
-      background: var(--accent);
-      color: #FFF;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 4px 14px;
-      border-radius: 100px;
-      box-shadow: 0 4px 12px var(--accent-glow);
-    }
-
-    .dl-card h3 {
-      font-size: 1.45rem;
-      font-weight: 800;
-      margin-bottom: 8px;
-    }
-
-    .dl-meta {
-      font-size: 0.85rem;
-      color: var(--text-dim);
-      font-family: var(--font-mono);
-      margin-bottom: 24px;
-    }
-
-    .dl-list {
-      list-style: none;
-      text-align: left;
-      width: 100%;
+      font-size: 0.95rem;
       margin-bottom: 28px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
     }
 
-    .dl-list li {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .dl-list li svg {
-      width: 16px;
-      height: 16px;
-      color: #10B981;
-      flex-shrink: 0;
-    }
-
-    .dl-card .btn {
-      width: 100%;
-      margin-top: auto;
-    }
-
-    /* System Requirements Box */
-    .requirements-box {
-      margin-top: 48px;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-md);
-      padding: 24px 30px;
-      max-width: 880px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .requirements-box h4 {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 14px;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .req-grid {
+    .grid-3 {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 16px;
     }
 
-    .req-item {
-      font-size: 0.86rem;
+    @media (max-width: 860px) {
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
     }
 
-    .req-item strong {
-      color: var(--text-main);
-      display: block;
-      margin-bottom: 2px;
+    .feature-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 20px;
     }
 
-    .req-item span {
+    .feature-item h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .feature-item p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Models Table */
+    .table-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+
+    th {
+      background: var(--surface-subtle);
+      color: var(--text-muted);
+      font-weight: 600;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-subtle);
       color: var(--text-muted);
     }
 
-    /* Footer */
-    footer {
-      border-top: 1px solid var(--card-border);
-      padding: 48px 0 36px;
-      background-color: #07090E;
+    tr:last-child td {
+      border-bottom: none;
     }
 
-    .footer-content {
+    td.code-cell {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--blue);
+      font-weight: 500;
+    }
+
+    td.primary-text {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* Download Box */
+    .download-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .download-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .dl-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .dl-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+
+    .dl-header h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .dl-size {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-subtle);
+    }
+
+    .dl-box p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .specs-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    .specs-list li::before {
+      content: "—";
+      margin-right: 8px;
+      color: var(--text-subtle);
+    }
+
+    /* System Requirements Line */
+    .requirements-bar {
+      margin-top: 24px;
+      padding: 16px 20px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 24px;
+      gap: 12px;
+      font-size: 0.85rem;
     }
 
-    .footer-left {
+    .req-item {
+      color: var(--text-muted);
+    }
+
+    .req-item span {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 40px 0;
+      margin-top: 40px;
+      font-size: 0.85rem;
+      color: var(--text-subtle);
+    }
+
+    .footer-wrap {
       display: flex;
-      flex-direction: column;
-      gap: 6px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
     }
 
     .footer-links {
       display: flex;
-      gap: 20px;
+      gap: 18px;
       list-style: none;
     }
 
     .footer-links a {
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.9rem;
-      transition: color 0.15s ease;
     }
 
     .footer-links a:hover {
-      color: var(--text-main);
+      color: var(--text);
     }
   </style>
 </head>
 <body>
 
-  <!-- Ambient Glow Backgrounds -->
-  <div class="ambient-glow glow-1"></div>
-  <div class="ambient-glow glow-2"></div>
-
   <!-- Navigation -->
   <header>
-    <div class="nav-container">
+    <div class="container nav">
       <a href="#" class="brand">
-        <img src="resources/icon.png" alt="Starora Icon">
+        <img src="resources/icon.png" alt="Starora Logo">
         <span>Starora</span>
-        <span class="version-tag">v0.1.0</span>
+        <span class="badge-version">v0.1.0</span>
       </a>
       <ul class="nav-links">
-        <li><a href="#showcase">Comparison</a></li>
+        <li><a href="#comparison">Compare</a></li>
         <li><a href="#features">Features</a></li>
-        <li><a href="#models">AI Models</a></li>
+        <li><a href="#models">Models</a></li>
         <li><a href="https://github.com/mphstar/starora" target="_blank" rel="noopener">GitHub</a></li>
         <li><a href="#download" class="btn-nav">Download</a></li>
       </ul>
@@ -779,404 +609,289 @@
   </header>
 
   <main>
-    <!-- Hero Section -->
-    <section class="hero">
-      <div class="container">
-        <div class="pill-badge">
-          <span class="dot"></span>
-          <span>Starora AI Studio v0.1.0 is now live</span>
-        </div>
-        <h1>
-          Restore. Enhance. <br>
-          <span class="gradient-text">Upscale with AI.</span>
-        </h1>
-        <p>
-          Offline desktop super-resolution for photos and videos powered by Real-ESRGAN Vulkan & FFmpeg. No subscriptions, no cloud latency, 100% private on your GPU.
+    <!-- Hero -->
+    <div class="container hero">
+      <div class="hero-content">
+        <span class="meta-tag">Windows 10 / 11 (64-bit) • Vulkan Hardware Accelerated</span>
+        <h1>Desktop Super-Resolution for Images & Videos</h1>
+        <p class="hero-lead">
+          Starora is an offline AI upscaler built with Real-ESRGAN Vulkan and FFmpeg. Restore noisy photos, enhance video resolution up to 4x, and process everything directly on your local GPU without uploading data to external servers.
         </p>
-
         <div class="hero-actions">
           <a href="https://github.com/mphstar/starora/releases/download/v0.1.0/starora-setup-0.1.0-amd64.exe" class="btn btn-primary">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-            </svg>
-            Download Setup (83 MB)
+            Download Installer (.exe)
           </a>
           <a href="https://github.com/mphstar/starora/releases/download/v0.1.0/starora-v0.1.0-windows-amd64-portable.zip" class="btn btn-secondary">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
-              <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-              <line x1="12" y1="22.08" x2="12" y2="12"/>
-            </svg>
-            Portable ZIP
+            Portable ZIP (83 MB)
           </a>
           <a href="https://github.com/mphstar/starora" target="_blank" rel="noopener" class="btn btn-secondary">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
-            </svg>
-            GitHub
+            Source Code
           </a>
         </div>
-        <p class="hero-subtext">Windows 10 / 11 (64-bit) • Vulkan Hardware Accelerated • Free & Open Source</p>
+        <p class="system-note">Free and open source under the MIT License • No login required</p>
+      </div>
+    </div>
 
-        <!-- Interactive Split Showcase -->
-        <div id="showcase" class="showcase">
-          <div class="showcase-header">
-            <div class="showcase-title">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="12" y1="2" x2="12" y2="22"/>
+    <!-- Interactive Quality Inspector -->
+    <div id="comparison" class="container inspector-section">
+      <div class="inspector-card">
+        <div class="inspector-toolbar">
+          <div class="inspector-title">
+            <span>Visual Quality Inspector</span>
+          </div>
+          <div class="segmented-control">
+            <button class="seg-btn" id="btnBefore">Before (1x)</button>
+            <button class="seg-btn active" id="btnSplit">Split Slider</button>
+            <button class="seg-btn" id="btnAfter">After (4x HD)</button>
+          </div>
+        </div>
+
+        <div class="viewport" id="viewport" style="--pos: 50%;">
+          <!-- After Layer -->
+          <img src="resources/sample_after.png" class="view-layer" alt="Real-ESRGAN 4x Upscaled">
+
+          <!-- Before Layer (Overlay) -->
+          <div class="view-overlay" id="viewOverlay">
+            <img src="resources/sample_before.png" class="view-layer" alt="Original Low-Res">
+          </div>
+
+          <!-- Divider -->
+          <div class="divider-line" id="dividerLine">
+            <div class="slider-handle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+                <polyline points="9 18 15 12 9 6"></polyline>
               </svg>
-              Interactive Quality Inspector (Drag slider to inspect)
-            </div>
-            <div class="toggle-group">
-              <button class="toggle-btn" id="btnBefore">Before</button>
-              <button class="toggle-btn active" id="btnSplit">Split View</button>
-              <button class="toggle-btn" id="btnAfter">After</button>
             </div>
           </div>
 
-          <div class="compare-container" id="compareContainer" style="--split: 50%;">
-            <!-- Base Image (After) -->
-            <img src="resources/sample_after.png" class="compare-img" alt="Real-ESRGAN 4x Upscaled">
-            
-            <!-- Overlaid Image (Before) -->
-            <div class="compare-overlay" id="compareOverlay">
-              <img src="resources/sample_before.png" class="compare-img" alt="Original Low-Res Image">
-            </div>
+          <span class="label-pill label-before">BEFORE (Original)</span>
+          <span class="label-pill label-after">AFTER (Real-ESRGAN 4x)</span>
+        </div>
 
-            <div class="compare-divider" id="compareDivider">
-              <div class="compare-handle">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="15 18 9 12 15 6"></polyline>
-                  <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-              </div>
-            </div>
+        <div class="inspector-footer">
+          <span>Drag the divider or hover across the viewport to compare textures</span>
+          <span>Sample: Anime / Illustration mode (4x)</span>
+        </div>
+      </div>
+    </div>
 
-            <span class="badge-tag badge-before">Before (Original Low-Res)</span>
-            <span class="badge-tag badge-after">After (Real-ESRGAN 4x)</span>
-          </div>
-          <p class="compare-hint">Move mouse or drag on the canvas to inspect high-frequency restoration details</p>
+    <!-- Features -->
+    <section id="features" class="container">
+      <h2 class="section-title">Core Capabilities</h2>
+      <p class="section-desc">Designed as a focused desktop workstation rather than a cloud API client.</p>
+
+      <div class="grid-3">
+        <div class="feature-item">
+          <h3>Local Vulkan Acceleration</h3>
+          <p>Runs directly on your discrete GPU or integrated graphics via Vulkan compute shaders. No cloud queue, no bandwidth costs, and zero data leaves your computer.</p>
+        </div>
+
+        <div class="feature-item">
+          <h3>Video Super-Resolution</h3>
+          <p>Integrated with FFmpeg to extract frames, process each frame in parallel batches, and re-encode to H.264, H.265 (HEVC), or ProRes while preserving the original audio.</p>
+        </div>
+
+        <div class="feature-item">
+          <h3>Interactive Scrubber & Zoom</h3>
+          <p>Dedicated canvas with smooth mouse wheel zoom up to 1000%, drag-to-pan navigation, and an interactive video timeline scrubber to preview exact frames.</p>
+        </div>
+
+        <div class="feature-item">
+          <h3>GFPGAN Face Restoration</h3>
+          <p>Restores blurred facial features, expressions, and fine skin details in old photographs or low-resolution portrait scans.</p>
+        </div>
+
+        <div class="feature-item">
+          <h3>Smart Rate Compression</h3>
+          <p>Flexible output control with CRF 18 / 23 / 28 video encoding and level 9 PNG or WebP compression to save storage space without degrading perceived fidelity.</p>
+        </div>
+
+        <div class="feature-item">
+          <h3>Self-Contained Portable</h3>
+          <p>Binaries for Real-ESRGAN NCNN and FFmpeg are embedded into the application. Ready to run right after extraction with no extra dependency installation.</p>
         </div>
       </div>
     </section>
 
-    <!-- Key Features -->
-    <section id="features">
-      <div class="container">
-        <div class="section-header">
-          <div class="section-tag">Capabilities</div>
-          <h2 class="section-title">Built for Performance & Privacy</h2>
-          <p class="section-desc">Everything runs directly on your machine. No cloud subscriptions, no data leaks, and no artificial file size caps.</p>
-        </div>
+    <!-- Models Reference -->
+    <section id="models" class="container">
+      <h2 class="section-title">Supported AI Models</h2>
+      <p class="section-desc">Select the appropriate model based on your input material.</p>
 
-        <div class="features-grid">
-          <div class="feature-card">
-            <div class="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                <circle cx="8.5" cy="8.5" r="1.5"/>
-                <polyline points="21 15 16 10 5 21"/>
-              </svg>
-            </div>
-            <h3>Image Super-Resolution</h3>
-            <p>Upscale photos, art, and illustrations up to 4x native resolution with realistic texture synthesis and sharp edge recovery.</p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polygon points="23 7 16 12 23 17 23 7"/>
-                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-              </svg>
-            </div>
-            <h3>Video AI Processing</h3>
-            <p>Multi-threaded video frame upscaling with built-in FFmpeg engine. Includes interactive timeline scrubber and zero audio loss.</p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-              </svg>
-            </div>
-            <h3>GFPGAN Face Restoration</h3>
-            <p>Automatically detects and repairs low-resolution faces in old photographs, removing blur and restoring natural expressions.</p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-              </svg>
-            </div>
-            <h3>Vulkan GPU Compute</h3>
-            <p>Harnesses modern Vulkan NCNN shaders for fast parallel execution across NVIDIA GeForce, AMD Radeon, and Intel Arc GPUs.</p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-              </svg>
-            </div>
-            <h3>100% Offline & Private</h3>
-            <p>Your creative work never leaves your storage drive. Works seamlessly without an active internet connection.</p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="4 14 10 14 10 20"/>
-                <polyline points="20 10 14 10 14 4"/>
-                <line x1="14" y1="10" x2="21" y2="3"/>
-                <line x1="3" y1="21" x2="10" y2="14"/>
-              </svg>
-            </div>
-            <h3>Smart Storage Compression</h3>
-            <p>Configurable rate control with CRF 18 / 23 / 28 and WebP/PNG level 9 compression to shrink file sizes by up to 80%.</p>
-          </div>
-        </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Model Identifier</th>
+              <th>Category</th>
+              <th>Best For</th>
+              <th>Scaling Factor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code-cell">realesrgan-x4plus</td>
+              <td class="primary-text">General Real-World</td>
+              <td>Photographs, textures, landscape shots, real-world imagery</td>
+              <td>2x, 3x, 4x</td>
+            </tr>
+            <tr>
+              <td class="code-cell">realesrgan-x4plus-anime</td>
+              <td class="primary-text">Illustration & 2D</td>
+              <td>Anime frames, manga drawings, digital art, flat vector scans</td>
+              <td>2x, 3x, 4x</td>
+            </tr>
+            <tr>
+              <td class="code-cell">realesrnet-x4plus</td>
+              <td class="primary-text">Denoising Restoration</td>
+              <td>Scanned documents, photos with sensor noise or high-ISO grain</td>
+              <td>2x, 3x, 4x</td>
+            </tr>
+            <tr>
+              <td class="code-cell">GFPGAN</td>
+              <td class="primary-text">Facial Enhancement</td>
+              <td>Portrait enhancements, restoring blurred eyes and facial details</td>
+              <td>Integrated toggle</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </section>
 
-    <!-- AI Models -->
-    <section id="models" style="background-color: #0B0E17;">
-      <div class="container">
-        <div class="section-header">
-          <div class="section-tag">AI Models</div>
-          <h2 class="section-title">Specialized Neural Networks</h2>
-          <p class="section-desc">Pre-trained deep learning architectures tailored for different types of visual media.</p>
+    <!-- Download -->
+    <section id="download" class="container">
+      <h2 class="section-title">Download Starora</h2>
+      <p class="section-desc">Choose between the standard Windows installer or the standalone portable package.</p>
+
+      <div class="download-grid">
+        <div class="dl-box">
+          <div>
+            <div class="dl-header">
+              <h3>Windows Setup</h3>
+              <span class="dl-size">83.1 MB</span>
+            </div>
+            <p style="margin-top: 8px;">Recommended for desktop users. Includes an installation wizard, start menu shortcuts, and uninstaller support.</p>
+          </div>
+          <ul class="specs-list">
+            <li>Single executable installer</li>
+            <li>Automatic desktop shortcut creation</li>
+            <li>Includes bundled Vulkan engine and FFmpeg</li>
+          </ul>
+          <a href="https://github.com/mphstar/starora/releases/download/v0.1.0/starora-setup-0.1.0-amd64.exe" class="btn btn-primary" style="justify-content: center;">
+            Download starora-setup-0.1.0-amd64.exe
+          </a>
         </div>
 
-        <div class="models-grid">
-          <div class="model-card">
-            <span class="model-badge">Real-World Media</span>
-            <h4>realesrgan-x4plus</h4>
-            <p>The standard model for photographs, portraits, landscape captures, and textured real-world imagery. Synthesizes rich high-frequency textures.</p>
+        <div class="dl-box">
+          <div>
+            <div class="dl-header">
+              <h3>Portable Archive</h3>
+              <span class="dl-size">83.7 MB</span>
+            </div>
+            <p style="margin-top: 8px;">For USB flash drives or running without administrative permissions. Unzip and run anywhere.</p>
           </div>
-
-          <div class="model-card">
-            <span class="model-badge">Illustration & 2D</span>
-            <h4>realesrgan-x4plus-anime</h4>
-            <p>Trained specifically on manga, anime, and stylized line art. Prevents halo artifacts and renders razor-sharp contours.</p>
-          </div>
-
-          <div class="model-card">
-            <span class="model-badge">Noise Reduction</span>
-            <h4>realesrnet-x4plus</h4>
-            <p>Features an integrated denoising pipeline. Excels at restoring degraded digital captures with high ISO noise or compression grain.</p>
-          </div>
+          <ul class="specs-list">
+            <li>Zero system registry modification</li>
+            <li>Self-contained folder</li>
+            <li>Same full Vulkan GPU features</li>
+          </ul>
+          <a href="https://github.com/mphstar/starora/releases/download/v0.1.0/starora-v0.1.0-windows-amd64-portable.zip" class="btn btn-secondary" style="justify-content: center;">
+            Download starora-v0.1.0-windows-amd64-portable.zip
+          </a>
         </div>
       </div>
-    </section>
 
-    <!-- Download Section -->
-    <section id="download">
-      <div class="container">
-        <div class="section-header">
-          <div class="section-tag">Installation</div>
-          <h2 class="section-title">Get Starora AI Studio</h2>
-          <p class="section-desc">Download the latest release for Windows. Completely free under the MIT license.</p>
-        </div>
-
-        <div class="download-grid">
-          <!-- Installer Card -->
-          <div class="dl-card highlight">
-            <span class="dl-badge">Recommended</span>
-            <h3>Windows Installer</h3>
-            <div class="dl-meta">starora-setup-0.1.0-amd64.exe • 83.1 MB</div>
-            
-            <ul class="dl-list">
-              <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Guided setup wizard
-              </li>
-              <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Desktop & Start Menu shortcuts
-              </li>
-              <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Embedded Real-ESRGAN & FFmpeg engines
-              </li>
-              <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Clean uninstaller included
-              </li>
-            </ul>
-
-            <a href="https://github.com/mphstar/starora/releases/download/v0.1.0/starora-setup-0.1.0-amd64.exe" class="btn btn-primary">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-              </svg>
-              Download Installer (.exe)
-            </a>
-          </div>
-
-          <!-- Portable Card -->
-          <div class="dl-card">
-            <h3>Portable Package</h3>
-            <div class="dl-meta">starora-v0.1.0-windows-amd64-portable.zip • 83.7 MB</div>
-            
-            <ul class="dl-list">
-              <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                No installation required
-              </li>
-              <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Extract and run immediately
-              </li>
-              <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Great for flash drives & sandboxes
-              </li>
-              <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Self-contained with all AI engines
-              </li>
-            </ul>
-
-            <a href="https://github.com/mphstar/starora/releases/download/v0.1.0/starora-v0.1.0-windows-amd64-portable.zip" class="btn btn-secondary">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
-                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-                <line x1="12" y1="22.08" x2="12" y2="12"/>
-              </svg>
-              Download Portable (.zip)
-            </a>
-          </div>
-        </div>
-
-        <!-- Requirements Box -->
-        <div class="requirements-box">
-          <h4>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-              <line x1="8" y1="21" x2="16" y2="21"/>
-              <line x1="12" y1="17" x2="12" y2="21"/>
-            </svg>
-            System Requirements
-          </h4>
-          <div class="req-grid">
-            <div class="req-item">
-              <strong>OS</strong>
-              <span>Windows 10 / 11 (64-bit)</span>
-            </div>
-            <div class="req-item">
-              <strong>GPU</strong>
-              <span>Vulkan-compatible GPU (NVIDIA, AMD, Intel)</span>
-            </div>
-            <div class="req-item">
-              <strong>RAM</strong>
-              <span>8 GB minimum (16 GB+ recommended)</span>
-            </div>
-            <div class="req-item">
-              <strong>Disk Space</strong>
-              <span>2 GB available free space</span>
-            </div>
-          </div>
-        </div>
+      <div class="requirements-bar">
+        <div class="req-item">Operating System: <span>Windows 10 / 11 (64-bit)</span></div>
+        <div class="req-item">GPU: <span>Vulkan-compatible (NVIDIA, AMD, Intel)</span></div>
+        <div class="req-item">Memory: <span>8 GB RAM (16 GB+ recommended)</span></div>
+        <div class="req-item">Storage: <span>2 GB free space</span></div>
       </div>
     </section>
   </main>
 
   <!-- Footer -->
   <footer>
-    <div class="container footer-content">
-      <div class="footer-left">
-        <div class="brand">
-          <img src="resources/icon.png" alt="Starora Icon">
-          <span>Starora AI Studio</span>
-        </div>
-        <p style="font-size: 0.85rem; color: var(--text-dim); margin-top: 4px;">
-          Built upon Real-ESRGAN, FFmpeg, and MyGo. Licensed under MIT.
-        </p>
+    <div class="container footer-wrap">
+      <div>
+        <strong>Starora AI Studio</strong> — Offline Super-Resolution Desktop Enhancer.
       </div>
-
       <ul class="footer-links">
         <li><a href="https://github.com/mphstar/starora" target="_blank" rel="noopener">GitHub</a></li>
         <li><a href="https://github.com/mphstar/starora/releases" target="_blank" rel="noopener">Releases</a></li>
-        <li><a href="https://github.com/mphstar/starora/blob/main/LICENSE" target="_blank" rel="noopener">License</a></li>
+        <li><a href="https://github.com/mphstar/starora/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a></li>
       </ul>
     </div>
   </footer>
 
-  <!-- Interactive Comparison Logic -->
   <script>
-    (function() {
-      const container = document.getElementById('compareContainer');
+    (function () {
+      const viewport = document.getElementById('viewport');
       const btnBefore = document.getElementById('btnBefore');
       const btnSplit = document.getElementById('btnSplit');
       const btnAfter = document.getElementById('btnAfter');
 
       let isDragging = false;
-      let currentSplit = 50;
 
-      function updateSplit(percentage) {
-        currentSplit = Math.max(0, Math.min(100, percentage));
-        container.style.setProperty('--split', currentSplit + '%');
+      function updateSplit(pct) {
+        const val = Math.max(0, Math.min(100, pct));
+        viewport.style.setProperty('--pos', val + '%');
       }
 
       function handleMove(e) {
-        const rect = container.getBoundingClientRect();
+        const rect = viewport.getBoundingClientRect();
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
         const x = clientX - rect.left;
-        const percentage = (x / rect.width) * 100;
-        updateSplit(percentage);
+        const pct = (x / rect.width) * 100;
+        updateSplit(pct);
       }
 
-      // Drag events
-      container.addEventListener('mousedown', function(e) {
+      viewport.addEventListener('mousedown', function (e) {
         isDragging = true;
         handleMove(e);
       });
 
-      window.addEventListener('mousemove', function(e) {
+      window.addEventListener('mousemove', function (e) {
         if (!isDragging) return;
         handleMove(e);
       });
 
-      window.addEventListener('mouseup', function() {
+      window.addEventListener('mouseup', function () {
         isDragging = false;
       });
 
-      // Touch events
-      container.addEventListener('touchstart', function(e) {
+      viewport.addEventListener('touchstart', function (e) {
         isDragging = true;
         handleMove(e);
       }, { passive: true });
 
-      window.addEventListener('touchmove', function(e) {
+      window.addEventListener('touchmove', function (e) {
         if (!isDragging) return;
         handleMove(e);
       }, { passive: true });
 
-      window.addEventListener('touchend', function() {
+      window.addEventListener('touchend', function () {
         isDragging = false;
       });
 
-      // Toggle buttons
-      function setToggleState(btn) {
+      function setSegment(btn) {
         [btnBefore, btnSplit, btnAfter].forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
       }
 
-      btnBefore.addEventListener('click', function() {
-        setToggleState(btnBefore);
+      btnBefore.addEventListener('click', function () {
+        setSegment(btnBefore);
         updateSplit(100);
       });
 
-      btnSplit.addEventListener('click', function() {
-        setToggleState(btnSplit);
+      btnSplit.addEventListener('click', function () {
+        setSegment(btnSplit);
         updateSplit(50);
       });
 
-      btnAfter.addEventListener('click', function() {
-        setToggleState(btnAfter);
+      btnAfter.addEventListener('click', function () {
+        setSegment(btnAfter);
         updateSplit(0);
       });
     })();
