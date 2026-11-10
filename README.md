@@ -8,8 +8,8 @@
 
 Offline AI upscaling powered by Real-ESRGAN NCNN Vulkan and FFmpeg with a native studio desktop interface.
 
-[![Go Version](https://img.shields.io/badge/Go-1.27.3-00ADD8?style=flat&logo=go)](https://golang.org)
-[![Platform](https://img.shields.io/badge/Platform-Windows%20(x64)-0078D6?style=flat&logo=windows)](https://github.com/mphstar/starora)
+[![Release](https://img.shields.io/github/v/release/mphstar/starora?color=blue&logo=github)](https://github.com/mphstar/starora/releases/latest)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20(x64)-0078D6?style=flat&logo=windows)](https://github.com/mphstar/starora/releases/latest)
 [![GPU Compute](https://img.shields.io/badge/Vulkan-Hardware%20Accelerated-red?style=flat&logo=vulkan)](https://www.vulkan.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat)](LICENSE)
 
@@ -22,6 +22,19 @@ Offline AI upscaling powered by Real-ESRGAN NCNN Vulkan and FFmpeg with a native
 **Starora** is a desktop application designed to restore, enhance clarity, and upscale images and videos (2x, 3x, 4x) entirely offline. All processing runs locally on your computer's GPU using Vulkan compute, without transmitting any files to external cloud servers.
 
 Its **Split Studio Workspace** layout provides an expansive visual comparison canvas on the left paired with a responsive parameter control panel on the right.
+
+---
+
+## Download
+
+Get the latest release for Windows (64-bit):
+
+| Package | Type | Format | Download |
+| :--- | :---: | :---: | :---: |
+| **Windows Installer** *(Recommended)* | Setup Wizard | `.exe` | [**Download starora-setup-0.1.0-amd64.exe**](https://github.com/mphstar/starora/releases/download/v0.1.0/starora-setup-0.1.0-amd64.exe) |
+| **Portable Archive** | Standalone Executable | `.zip` | [**Download starora-v0.1.0-windows-amd64-portable.zip**](https://github.com/mphstar/starora/releases/download/v0.1.0/starora-v0.1.0-windows-amd64-portable.zip) |
+
+All releases and changelogs are also available on the [**GitHub Releases**](https://github.com/mphstar/starora/releases) page.
 
 ---
 
